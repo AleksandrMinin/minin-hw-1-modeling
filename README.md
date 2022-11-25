@@ -34,7 +34,10 @@
     а также папка с тренировочными изображениями train-jpg.
 
 4. Настройка ClearML
+
     a. [В своем профиле ClearML](https://app.community.clear.ml/profile) нажимаем:
       "Settings" -> "Workspace" -> "Create new credentials"
+      
     b. Появится инструкция для "LOCAL PYTHON", копируем её.
-    с. Написать в консоли `clearml-init` и вставляем конфиг из инструкции.
+    
+    с. Пишем в консоли `clearml-init` и вставляем конфиг из инструкции.
