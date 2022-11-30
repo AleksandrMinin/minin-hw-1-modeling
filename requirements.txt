@@ -1,7 +1,7 @@
 albumentations==1.0.3
 catalyst==22.04
 clearml==1.6.2
-dvc[gdrive]==2.35.2
+dvc[gdrive]==2.34.2
 jupyter==1.0.0
 matplotlib==3.4.2
 opencv-python-headless==4.6.0.66

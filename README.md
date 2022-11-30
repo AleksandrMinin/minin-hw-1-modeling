@@ -67,10 +67,8 @@ CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 ROOT_PATH=/storage/minin/datasets/plane
     dvc init
    ```
     ```
-    dvc remote add --default myremote gdrive://gdrive_folder_id
+    dvc remote add --default myremote gdrive://1UW_41tX1dZFaf22x5dCfVjfytMU737nH?hl=ru
     ```
-
-    где gdrive_folder_id берется из адреса вашей папки в Google Drive https://drive.google.com/drive/folders/gdrive_folder_id
 
     ```
     dvc config cache.type hardlink,symlink
