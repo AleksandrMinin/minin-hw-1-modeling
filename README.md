@@ -1,4 +1,4 @@
-## kaggle-planet-modeling
+# kaggle-planet-modeling
 
 Решение задачи мультилейбл классификации спутниковых изображений Амазонки.
 
@@ -59,21 +59,28 @@ CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 ROOT_PATH=/data/planet-understanding-th
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 ROOT_PATH=/storage/minin/datasets/planet-from-space python train.py
 ```
 
-### Добавление модели в DVC
+### ClearML
+Метрики и конфигурации экспериментов:
+1. [experiment_1](https://app.clear.ml/projects/ff3c0bfc136344e78f782c01c14f28ed/experiments/12ec3b227b8e4e6dbd584a2a8201decd/output/execution)
+2. [experiment_2](https://app.clear.ml/projects/ff3c0bfc136344e78f782c01c14f28ed/experiments/18dfe6335f74420a92a0dd5a295fd80d/output/execution)
+3. [experiment_3](https://app.clear.ml/projects/ff3c0bfc136344e78f782c01c14f28ed/experiments/e0090bd8815744989bc45a43b733db21/output/execution)
+
+### DVC
+#### Добавление модели в DVC
 1. Инициализация DVC
 
     В директории проекта пишем команды:
     ```
     dvc init
-   ```
     ```
-    dvc remote add --default myremote gdrive://1UW_41tX1dZFaf22x5dCfVjfytMU737nH?hl=ru
+    ```
+    dvc remote add --default myremote ssh://91.206.15.25/home/aleksandrminin/dvc_files
     ```
 
     ```
+    dvc remote modify myremote user aleksandrminin
     dvc config cache.type hardlink,symlink
-    dvc checkout --relink
-   ```
+    ```
 
     подробнее про типы линков можно почитать [здесь](https://dvc.org/doc/user-guide/large-dataset-optimization#file-link-types-for-the-dvc-cache).
 
@@ -92,32 +99,39 @@ CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 ROOT_PATH=/storage/minin/datasets/plane
     git commit -m "add new model"
    ```
 
-### Загрузка модели из DVC к себе
+#### Загрузка лучшей модели из DVC к себе
    ```
     git pull origin master
     dvc pull
    ```
+   
+   
+1. Генерируем SSH-ключ для доступа на стейджинг-сервер
 
-### [History](HISTORY.md) экспериментов
+    Откройте терминал и выполните команду:
+    ```
+    ssh-keygen -t rsa
+    ```
+    Вводим 
+    ```
+    Enter file in which to save the key (/home/user/.ssh/id_rsa):
+    ```
+    Далее нужно добавить публичную часть ключа на сервер:
+    ```
+    ssh-copy-id -i /path/to/your/id_rsa.pub username@91.206.15.25
+    ```
+1. Генерируем SSH-ключ для доступа на стейджинг-сервер
 
-### Немного про ClearML
-
-В рамках курса мы рассматриваем ClearML
-как удобный логгер, который позволяет удобно шарить и хранить
-эксперименты внутри команды. На самом деле, почти все команды, 
-которые я знаю, только так его и используют.
-
-Но ClearML это не только логгер, у него есть много других клёвых
-возможностей
-* Делать контроллеры пайплайнов и подбирать гиперпараметры. [Тык](https://clear.ml/docs/latest/docs/guides/pipeline/pipeline_controller) и [тык](https://clear.ml/docs/latest/docs/guides/optimization/hyper-parameter-optimization/examples_hyperparam_opt);
-* [ClearML AGENT](https://github.com/allegroai/clearml-agent). Запуск экспериментов на удаленной машине (или в облаке), можно прямо из UI, подкручивая нужные параметры;
-* [Управлять данными](https://github.com/allegroai/clearml/blob/master/docs/datasets.md);
-* Не так давно у них даже появился [свой сервинг](https://github.com/allegroai/clearml-serving).
-
-Ещё у них есть [ютуб-канал](https://www.youtube.com/c/ClearML/featured), где они коротко и по делу рассказывают о своих
-возможностях.
-
-И нужно немного позанудствовать. ~~охужэтотвендорлок~~. Перед тем, как полностью пересаживать
-все свои процессы на ClearML, вспомните о том, что это стартап. И о том, что может
-случаться со стартапами.  Это не попытка отговорить, просто учитывайте 
-этот риск.
+    Кодируем ssh-ключ в base64-строку:
+    ```
+    base64 /path/to/your/ssh_private_key
+    ```
+    Вооводим 
+    ```
+    ### DVC_REMOTE_NAME -- просто то, как вы хотите назвать хост для dvc
+    
+    ```
+    Далее нужно добавить публичную часть ключа на сервер:
+    ```
+    ssh-copy-id -i /path/to/your/id_rsa.pub username@91.206.15.25
+    ```
