@@ -7,3 +7,4 @@ hello-world:
   stage: hello
   script:
     - echo "Hello world!"
+  tags: ['cvr-nov22']
