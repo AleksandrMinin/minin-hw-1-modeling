@@ -18,13 +18,13 @@ def get_base_callbacks(class_names: tp.List[str]) -> tp.List[Callback]:
     return [
         dl.BatchTransformCallback(
             transform=torch.sigmoid,
-            scope='on_batch_end',
+            scope="on_batch_end",
             input_key=LOGITS,
             output_key=SCORES,
         ),
         dl.BatchTransformCallback(
             transform=lambda x: x > config.binary_thresh,
-            scope='on_batch_end',
+            scope="on_batch_end",
             input_key=SCORES,
             output_key=PREDICTS,
         ),
@@ -55,7 +55,7 @@ def get_train_callbacks(class_names: tp.List[str]) -> tp.List[Callback]:
                 metric_key=config.valid_metric,
                 minimize=config.minimize_metric,
             ),
-        ]
+        ],
     )
     return callbacks
 
@@ -74,12 +74,12 @@ def train(config: Config):
         output_key=LOGITS,
         target_key=TARGETS,
     )
-    
+
     if torch.cuda.is_available():
-        engine=GPUEngine()
+        engine = GPUEngine()
     else:
-        engine=CPUEngine()
-    
+        engine = CPUEngine()
+
     runner.train(
         model=model,
         engine=engine,
@@ -88,7 +88,7 @@ def train(config: Config):
         scheduler=scheduler,
         loaders=loaders,
         callbacks=get_train_callbacks(class_names),
-        loggers={'_clearml': clearml_logger},
+        loggers={"_clearml": clearml_logger},
         num_epochs=config.n_epochs,
         valid_loader=VALID,
         valid_metric=config.valid_metric,
@@ -100,16 +100,16 @@ def train(config: Config):
 
     metrics = runner.evaluate_loader(
         model=model,
-        loader=infer_loader['infer'],
+        loader=infer_loader["infer"],
         callbacks=get_base_callbacks(class_names),
         verbose=True,
         seed=config.seed,
     )
 
-    clearml_logger.log_metrics(metrics, scope='loader', runner=runner, infer=True)
+    clearml_logger.log_metrics(metrics, scope="loader", runner=runner, infer=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     set_global_seed(config.seed)
     train(config)

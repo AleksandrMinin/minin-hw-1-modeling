@@ -3,9 +3,17 @@ import os
 
 import pandas as pd
 from src.dataset_splitter import stratify_shuffle_split_subsets
-from src.config import IMG_COLUMN, LABEL_COLUMN, TRAIN_DF, VALID_DF, TEST_DF
+from src.config import ROOT_PATH, IMG_COLUMN, LABEL_COLUMN, TRAIN_DF, VALID_DF, TEST_DF
 from sklearn.preprocessing import MultiLabelBinarizer
 
+
+def tag_to_mlb(df: pd.DataFrame):
+    mlb = MultiLabelBinarizer()
+    df_mlb = mlb.fit_transform(df.pop(LABEL_COLUMN).str.split())
+    df_mlb = pd.DataFrame(df_mlb, index=df.index, columns=mlb.classes_)
+    df = df.join(df_mlb)
+    return df
+    
 
 def split_and_save_datasets(df: pd.DataFrame, save_path: str):
     logging.info(f"Original dataset: {len(df)}")
@@ -29,9 +37,8 @@ def split_and_save_datasets(df: pd.DataFrame, save_path: str):
 
 
 if __name__ == "__main__":
-    save_path = os.path.join(os.environ.get("ROOT_PATH"))
+    save_path = ROOT_PATH
     logging.basicConfig(level=logging.INFO)
-    df = pd.read_csv(os.path.join(os.path.join(os.environ.get("ROOT_PATH")), "train.csv"))
-    mlb = MultiLabelBinarizer()
-    df = df.join(pd.DataFrame(mlb.fit_transform(df.pop(LABEL_COLUMN).str.split()), index=df.index, columns=mlb.classes_))
+    df = pd.read_csv(os.path.join(ROOT_PATH, "train.csv"))
+    df = tag_to_mlb(df)
     split_and_save_datasets(df, save_path)
