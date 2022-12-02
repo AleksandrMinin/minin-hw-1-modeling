@@ -1,0 +1,9 @@
+image: ubuntu:20.04
+
+stages:
+  - hello
+
+hello-world:
+  stage: hello
+  script:
+    - echo "Hello world!"
