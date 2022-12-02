@@ -28,7 +28,6 @@
 3. Разбиваем датасет на 3 части(train_df.csv, valid_df.csv, test_df.csv):
     ```
     ROOT_PATH=/data/planet-understanding-the-amazon-from-space python train_test_split.py
-    ROOT_PATH=/storage/minin/datasets/planet-from-space python train_test_split.py
     ```
     P.S. В папке ROOT_PATH необходимо, чтобы ОТДЕЛЬНО лежал файл train.csv с классифицированными изображениями из датасета,
     а также папка с тренировочными изображениями train-jpg.
@@ -47,16 +46,12 @@
 
 ```
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 ROOT_PATH=/data/planet-understanding-the-amazon-from-space nohup python train.py > log.out
-
-CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 ROOT_PATH=/storage/minin/datasets/planet-from-space nohup python train.py > log.out
 ```
 
 Запуск тренировки без `nohup`:
 
 ```
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 ROOT_PATH=/data/planet-understanding-the-amazon-from-space python train.py
-
-CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 ROOT_PATH=/storage/minin/datasets/planet-from-space python train.py
 ```
 
 ### ClearML
@@ -101,7 +96,7 @@ CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 ROOT_PATH=/storage/minin/datasets/plane
 
 #### Загрузка лучшей модели из DVC к себе
    ```
-    git pull origin master
+    git pull origin main
     dvc pull
    ```
    
