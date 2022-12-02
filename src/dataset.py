@@ -2,15 +2,14 @@ import logging
 import os
 import typing as tp
 from collections import OrderedDict
-
 import albumentations as albu
+
 import cv2
 import numpy as np
 import pandas as pd
-from src.config import Config
-from src.config import IMG_COLUMN
+from src.config import Config, IMG_COLUMN
 from src.const import IMAGES, TARGETS
-from src.utils import worker_init_fn
+from src.tools import worker_init_fn
 from torch.utils.data import DataLoader, Dataset
 
 
@@ -30,7 +29,8 @@ class AmazonDataset(Dataset):
     def __getitem__(self, idx: int) -> tp.Dict[str, np.ndarray]:
         row = self.df.iloc[idx]
 
-        img_path = f"{os.path.join(self.config.images_dir, row[IMG_COLUMN])}.jpg"
+        img_name = os.path.join(self.config.images_dir, row[IMG_COLUMN])
+        img_path = f"{img_name}.jpg"
         target = np.array(row.drop([IMG_COLUMN]), dtype="float32")
 
         image = cv2.imread(img_path)
@@ -47,27 +47,25 @@ class AmazonDataset(Dataset):
         return len(self.df)
 
 
-def _get_dataframes(
-    config: Config,
-) -> tp.Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def _get_dataframes(config: Config) -> tp.Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     train_df = pd.read_csv(config.train_dataset_path)
     valid_df = pd.read_csv(config.valid_dataset_path)
     test_df = pd.read_csv(config.test_dataset_path)
 
-    logging.info(f"Train dataset: {len(train_df)}")
-    logging.info(f"Valid dataset: {len(valid_df)}")
-    logging.info(f"Test dataset: {len(test_df)}")
+    logging.info(f"Train dataset: {len(train_df)}")  # noqa: WPS237
+    logging.info(f"Valid dataset: {len(valid_df)}")  # noqa: WPS237
+    logging.info(f"Test dataset: {len(test_df)}")    # noqa: WPS237
 
     return train_df, valid_df, test_df
 
 
 def get_class_names(config: Config) -> tp.List[str]:
     class_names = list(pd.read_csv(config.train_dataset_path, nrows=1).drop(IMG_COLUMN, axis=1))
-    logging.info(f"Classes num: {len(class_names)}")
+    logging.info(f"Classes num: {len(class_names)}")  # noqa: WPS237
     return class_names
 
 
-def get_datasets(config: Config) -> tp.Tuple[Dataset, Dataset, Dataset]:
+def get_datasets(config: Config) -> tp.Tuple[Dataset, Dataset, Dataset]:  # noqa: WPS210
     df_train, df_val, df_test = _get_dataframes(config)
 
     train_dataset = AmazonDataset(
@@ -92,9 +90,9 @@ def get_datasets(config: Config) -> tp.Tuple[Dataset, Dataset, Dataset]:
     return train_dataset, valid_dataset, test_dataset
 
 
-def get_loaders(
+def get_loaders(                                                           # noqa: WPS210
     config: Config,
-) -> tp.Tuple[tp.OrderedDict[str, DataLoader], tp.Dict[str, DataLoader]]:
+) -> tp.Tuple[tp.OrderedDict[str, DataLoader], tp.Dict[str, DataLoader]]:  # noqa: WPS221
     train_dataset, valid_dataset, test_dataset = get_datasets(config)
 
     train_loader = DataLoader(

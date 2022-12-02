@@ -11,7 +11,7 @@ from src.config import config
 from src.const import IMAGES, LOGITS, PREDICTS, SCORES, TARGETS, VALID
 from src.dataset import get_class_names, get_loaders
 from src.loggers import ClearMLLogger
-from src.utils import set_global_seed
+from src.tools import set_global_seed
 
 
 def get_base_callbacks(class_names: tp.List[str]) -> tp.List[Callback]:

@@ -52,7 +52,4 @@ class Config:
         return res
 
     def __post_init__(self):
-        self.checkpoints_dir = os.path.join(
-            "./weights",
-            self.experiment_name,
-        )
+        self.checkpoints_dir = os.path.join("./weights", self.experiment_name)  # noqa: WPS601

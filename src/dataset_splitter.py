@@ -21,12 +21,12 @@ def _split(
 
     num_overlapping_samples = len(set(train_indexes).intersection(set(everything_else_indexes)))
     if num_overlapping_samples != 0:
-        raise ValueError(f'First splitting failed, {num_overlapping_samples} overlapping samples detected')
+        raise ValueError(f"First splitting failed, {num_overlapping_samples} overlapping samples detected")
 
     return train_indexes, everything_else_indexes
 
 
-def _show_split(
+def _show_split(                     # noqa: WPS210
     train_fraction: float,
     y_train: np.array,
     y_dev: np.array,
@@ -35,19 +35,26 @@ def _show_split(
 ) -> tp.NoReturn:
 
     val_test_fraction = (1.0 - train_fraction) / 2
-    info = [('train', train_fraction, y_train), ('test', val_test_fraction, y_dev), ('val', val_test_fraction, y_val)]
+    info_split = [
+        ("train", train_fraction, y_train),
+        ("test", val_test_fraction, y_dev),
+        ("val", val_test_fraction, y_val),
+    ]
 
-    for subset_name, frac, encodings_collection in info:
+    for subset_name, frac, encodings_collection in info_split:
         # column-wise sum. sum(counts) > n_samples due to imgs with >1 class
         count_values = np.sum(encodings_collection, axis=0)
         # skip first col, which is the image key, not a class ID
-        counts = {class_id: count_val for class_id, count_val in zip(full_dataset.columns[1:], count_values)}
-        logging.info(f' {subset_name} subset ({frac * 100:.1f}%) encodings counts after stratification: {counts}')
+        class_ids = full_dataset.columns[1:]
+        counts = {class_id: count_val for class_id, count_val in zip(class_ids, count_values)}
+        frac = frac * 100
+        info_subset_name = f" {subset_name} subset ({frac:.1f}%) encodings counts after stratification: {counts}"
+        logging.info(info_subset_name)
 
 
-def stratify_shuffle_split_subsets(
+def stratify_shuffle_split_subsets(                     # noqa: WPS210
     full_dataset: pd.DataFrame,
-    img_path_column: str = 'Id',
+    img_path_column: str = "Id",
     train_fraction: float = 0.8,
     verbose: bool = False,
 ) -> tp.Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -68,11 +75,11 @@ def stratify_shuffle_split_subsets(
 
     # sanity check: no duplicate labels
     if len(img_urls) != len(set(img_urls)):
-        raise ValueError('Duplicate image keys detected.')
+        raise ValueError("Duplicate image keys detected.")
 
     labels = full_dataset.drop(columns=[img_path_column]).to_numpy().astype(int)
     # NOTE generators are replicated across workers. do stratified shuffle split beforehand
-    logging.info('Stratifying dataset iteratively. this may take a while.')
+    logging.info("Stratifying dataset iteratively. this may take a while.")
     # NOTE: splits >2 broken; https://github.com/scikit-multilearn/scikit-multilearn/issues/209
     # so, do 2 rounds of iterative splitting
     train_indexes, everything_else_indexes = _split(img_urls, labels, [1.0 - train_fraction, train_fraction])
@@ -99,6 +106,6 @@ def stratify_shuffle_split_subsets(
     val_subset.insert(0, img_path_column, pd.Series(x_val))
     val_subset.columns = full_dataset.columns
 
-    logging.info('Stratifying dataset is completed.')
+    logging.info("Stratifying dataset is completed.")
 
     return train_subset, val_subset, dev_subset

@@ -9,7 +9,7 @@ from clearml import Task
 from src.config import Config
 
 
-class ClearMLLogger(ILogger):
+class ClearMLLogger(ILogger):  # noqa: WPS338
     @property
     def logger(self) -> Any:
         return self.clearml_logger
@@ -27,7 +27,7 @@ class ClearMLLogger(ILogger):
         )
         self.class_names = class_names
         self.metrics_to_log = config.log_metrics
-        self.metrics_to_log.extend(['loss', 'lr'])
+        self.metrics_to_log.extend(["loss", "lr"])
 
         task = Task.init(
             project_name=config.project_name,
@@ -57,7 +57,7 @@ class ClearMLLogger(ILogger):
                     loader_key=runner.loader_key,
                 )
 
-    def _report_scalar(self, title: str, mode: str, value: float, epoch: int):
+    def _report_scalar(self, title: str, mode: str, value: float, epoch: int):  # noqa: WPS110
         self.logger.report_scalar(
             title=title,
             series=mode,
@@ -69,25 +69,26 @@ class ClearMLLogger(ILogger):
         log_keys = [k for log_m in self.metrics_to_log for k in metrics.keys() if log_m in k]
         for k in log_keys:
             title = k
-            if 'class' in k:
-                title, cl = k.split('/')
-                title = f"{title}_{self.class_names[int(cl.split('_')[1])]}"
+            if "class" in k:
+                title, cl = k.split("/")
+                class_name = self.class_names[int(cl.split("_")[1])]
+                title = f"{title}_{class_name}"
             self._report_scalar(title, loader_key, metrics[k], step)
 
-    def _log_infer_metrics(self, metrics: tp.Dict[str, float]):
+    def _log_infer_metrics(self, metrics: tp.Dict[str, float]):  # noqa: WPS210
         infer_metrics = defaultdict(dict)
-        self.metrics_to_log.append('support')
+        self.metrics_to_log.append("support")
 
         log_keys = [k for log_m in self.metrics_to_log for k in metrics.keys() if log_m in k]
         for k in log_keys:
-            if '/' in k:
-                title, cl = k.split('/')
-                if 'class' in cl:
-                    cl = self.class_names[int(cl.split('_')[1])]
+            if "/" in k:
+                title, cl = k.split("/")
+                if "class" in cl:
+                    cl = self.class_names[int(cl.split("_")[1])]
                 infer_metrics[title].update({cl: metrics[k]})
         test_results = pd.DataFrame(infer_metrics)
-        test_results = test_results.rename(columns={'support': 'num'}).T
-        self.logger.report_table(title='Test Results', series='Test Results', iteration=0, table_plot=test_results)
+        test_results = test_results.rename(columns={"support": "num"}).T
+        self.logger.report_table(title="Test Results", series="Test Results", iteration=0, table_plot=test_results)
 
     def flush_log(self):
         self.logger.flush()
