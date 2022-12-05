@@ -19,8 +19,12 @@
     ```
 
 2. Установка пакетов
-
     В активированном окружении:
+    a. Обновить pip
+    ```
+    pip install --upgrade pip 
+    ```
+    b. Выполнить команду
     ```
     pip install -r requirements.txt
     ```
