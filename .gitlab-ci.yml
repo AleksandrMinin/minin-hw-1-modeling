@@ -18,6 +18,7 @@ lint-job:       # This job runs in the build stage, which runs first.
   script:
     - echo "Running lint..." 
     - python -m pip install wemake-python-styleguide==0.16.1  
+    - flake8 --version  
     - flake8 src/  
     - echo "Lint is ok!"
   tags: ['cvr-nov22']
