@@ -1,0 +1,4 @@
+outs:
+- md5: f87ca31a06239bb7d472163f42709ed5
+  size: 44879673
+  path: space_image_classification.pt
