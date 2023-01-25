@@ -105,34 +105,3 @@ CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 ROOT_PATH=/data/planet-understanding-th
     git pull origin main
     dvc pull
    ```
-   
-   
-1. Генерируем SSH-ключ для доступа на стейджинг-сервер
-
-    Откройте терминал и выполните команду:
-    ```
-    ssh-keygen -t rsa
-    ```
-    Вводим 
-    ```
-    Enter file in which to save the key (/home/user/.ssh/id_rsa):
-    ```
-    Далее нужно добавить публичную часть ключа на сервер:
-    ```
-    ssh-copy-id -i /path/to/your/id_rsa.pub username@91.206.15.25
-    ```
-1. Генерируем SSH-ключ для доступа на стейджинг-сервер
-
-    Кодируем ssh-ключ в base64-строку:
-    ```
-    base64 /path/to/your/ssh_private_key
-    ```
-    Вооводим 
-    ```
-    ### DVC_REMOTE_NAME -- просто то, как вы хотите назвать хост для dvc
-    
-    ```
-    Далее нужно добавить публичную часть ключа на сервер:
-    ```
-    ssh-copy-id -i /path/to/your/id_rsa.pub username@91.206.15.25
-    ```

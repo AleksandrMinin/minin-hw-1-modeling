@@ -1,0 +1,6 @@
+image_name,agriculture,artisinal_mine,bare_ground,blooming,blow_down,clear,cloudy,conventional_mine,cultivation,habitation,haze,partly_cloudy,primary,road,selective_logging,slash_burn,water
+train_0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0
+train_1,1,0,0,0,0,1,0,0,0,1,0,0,1,1,0,0,0
+train_2,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1
+train_3,1,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0
+train_4,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,1,1

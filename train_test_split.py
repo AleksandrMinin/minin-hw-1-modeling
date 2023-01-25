@@ -1,3 +1,4 @@
+
 import logging
 import os
 
@@ -13,13 +14,13 @@ def tag_to_mlb(df: pd.DataFrame):
     df_mlb = pd.DataFrame(df_mlb, index=df.index, columns=mlb.classes_)
     df = df.join(df_mlb)
     return df
-    
+
 
 def split_and_save_datasets(df: pd.DataFrame, save_path: str):
     logging.info(f"Original dataset: {len(df)}")
     df = df.drop_duplicates()
     logging.info(f"Final dataset: {len(df)}")
-    
+
     train_df, valid_df, test_df = stratify_shuffle_split_subsets(
         df,
         img_path_column=IMG_COLUMN,
@@ -42,3 +43,4 @@ if __name__ == "__main__":
     df = pd.read_csv(os.path.join(ROOT_PATH, "train.csv"))
     df = tag_to_mlb(df)
     split_and_save_datasets(df, save_path)
+

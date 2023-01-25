@@ -14,7 +14,13 @@ SEED = 42
 IMG_SIZE = 256
 BATCH_SIZE = 200
 N_EPOCHS = 50
-ROOT_PATH = os.path.join(os.environ.get("ROOT_PATH"))
+try:
+    ROOT_PATH = os.path.join(os.environ.get("ROOT_PATH"))
+except:  # noqa: E722, B001
+    print("ROOT_PATH is missing in environment variables")  # noqa: WPS421
+    ROOT_PATH = "tests/data_for_tests"
+    print(f"ROOT_PATH = {ROOT_PATH} by default")  # noqa: WPS421
+
 IMAGES_DIR = "train-jpg"
 IMG_COLUMN = "image_name"
 LABEL_COLUMN = "tags"
@@ -87,5 +93,5 @@ config = Config(
     valid_dataset_path=os.path.join(ROOT_PATH, VALID_DF),
     test_dataset_path=os.path.join(ROOT_PATH, TEST_DF),
     project_name="ClassificationImagesFromSpace",
-    experiment_name=f"experiment_3_{date_time}",
+    experiment_name=f"experiment_4_{date_time}",
 )

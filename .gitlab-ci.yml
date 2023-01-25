@@ -12,9 +12,9 @@ lint-job:
     - flake8 src/
   tags: ['cvr-nov22']
 
-unit-test-job:
+test-job:
   stage: test
   script:
     - python -m pip install pytest==7.1.2
-    - pytest tests
+    - PYTHONPATH=. pytest tests -p no:warnings
   tags: ['cvr-nov22']

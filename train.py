@@ -60,14 +60,18 @@ def get_train_callbacks(class_names: tp.List[str]) -> tp.List[Callback]:
     return callbacks
 
 
-def train(config: Config):
+def train(config: Config, clearml: bool = True):
     loaders, infer_loader = get_loaders(config)
     class_names = get_class_names(config)
 
     model = timm.create_model(num_classes=len(class_names), **config.model_kwargs)
     optimizer = config.optimizer(params=model.parameters(), **config.optimizer_kwargs)
     scheduler = config.scheduler(optimizer=optimizer, **config.scheduler_kwargs)
-    clearml_logger = ClearMLLogger(config, class_names)
+    if clearml:
+        clearml_logger = ClearMLLogger(config, class_names)
+        loggers={"_clearml": clearml_logger}
+    else:
+        loggers = None
 
     runner = dl.SupervisedRunner(
         input_key=IMAGES,
@@ -88,7 +92,7 @@ def train(config: Config):
         scheduler=scheduler,
         loaders=loaders,
         callbacks=get_train_callbacks(class_names),
-        loggers={"_clearml": clearml_logger},
+        loggers=loggers,
         num_epochs=config.n_epochs,
         valid_loader=VALID,
         valid_metric=config.valid_metric,
@@ -105,8 +109,9 @@ def train(config: Config):
         verbose=True,
         seed=config.seed,
     )
-
-    clearml_logger.log_metrics(metrics, scope="loader", runner=runner, infer=True)
+    
+    if clearml:
+        clearml_logger.log_metrics(metrics, scope="loader", runner=runner, infer=True)
 
 
 if __name__ == "__main__":
